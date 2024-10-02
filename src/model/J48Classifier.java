@@ -1,5 +1,7 @@
 package model;
 
+import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.classifiers.trees.J48;
@@ -8,9 +10,36 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 import weka.core.converters.CSVSaver;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class J48Classifier {
+
+    public static J48 tree;
+    public static Instances dataset;
+
+    static {
+        try {
+            DataSource source = new DataSource("data/weka_model.arff");
+            dataset = source.getDataSet();
+            dataset.setClassIndex(dataset.numAttributes() - 1);
+            tree = new J48();
+            tree.setOptions(new String[] {"-C", "0.25", "-M", "2"});
+            tree.buildClassifier(dataset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void predict(double[] features) {
+        try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+/*
 
     public static void main(String[] args) throws Exception {
         // Load the ARFF file
@@ -34,7 +63,6 @@ public class J48Classifier {
         Instances filteredData = Filter.useFilter(data, remove);
 
         // Train the J48 model with specified parameters (-c 0.25 -m 2)
-        J48 tree = new J48();
         String[] options = new String[]{"-C", "0.25", "-M", "2"};
         tree.setOptions(options);
 
@@ -66,4 +94,7 @@ public class J48Classifier {
 
         System.out.println("Final model built on the entire dataset and output saved to CSV.");
     }
+*/
+
+
 }
