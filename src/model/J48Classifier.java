@@ -1,3 +1,5 @@
+package model;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.classifiers.trees.J48;
@@ -8,7 +10,7 @@ import weka.core.converters.CSVSaver;
 import java.io.File;
 import java.util.Random;
 
-public class WekaJ48Model {
+public class J48Classifier {
 
     public static void main(String[] args) throws Exception {
         // Load the ARFF file
