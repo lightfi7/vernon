@@ -41,9 +41,9 @@ public class J48Classifier implements DataHandler {
 
             System.out.println(data.get(1).numValues());
 
-            // Remove specific columns (1st, 2nd, 3rd, 5th, 38th, 39th, 49th)
+            // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
             Remove remove = new Remove();
-            final String[] removeOptions = new String[]{"-R", "1,2,3,5,38,39,49"};
+            final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
             remove.setOptions(removeOptions);
 
             remove.setInputFormat(data);
@@ -98,9 +98,9 @@ public class J48Classifier implements DataHandler {
             data.setClassIndex(0);
             data.add(new DenseInstance(1.0, values));
 
-            // Remove specific columns (1st, 2nd, 3rd, 5th, 38th, 39th, 49th)
+            // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
             Remove remove = new Remove();
-            final String[] removeOptions = new String[]{"-R", "1,2,3,5,38,39,49"};
+            final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
             remove.setOptions(removeOptions);
 
             remove.setInputFormat(data);

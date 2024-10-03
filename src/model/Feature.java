@@ -36,6 +36,10 @@ public class Feature {
         //Map<String, Double> features = new HashMap<>();
         ArrayList<Double> features = new ArrayList<Double>();
 
+        features.add(0.0); //1
+        features.add(0.0); //2
+        features.add(0.0); //3
+
         // Extract necessary fields from the JSON data
         String timeString = (String) jsonData.get("time");
         LocalTime time = LocalTime.parse(timeString);
@@ -50,6 +54,7 @@ public class Feature {
         int feature1 = feature1Time;
         // features.put("feature1", (double) feature1);
         features.add((double)feature1);
+        features.add(0.0); //5
 
         // Feature 2: AAAA
         double feature2 = AAAA;
@@ -95,6 +100,7 @@ public class Feature {
         double feature9 = 1.0 / BBBB;
         // features.put("feature9", feature9);
         features.add((double) feature9);
+        features.add(0.0); //14
 
         // Feature 10: High of Feature 9
         if (feature9 > highFeature9) {
@@ -234,9 +240,13 @@ public class Feature {
             lowEquityLast = equityLast;
             timeOfLowEquityLast = feature1;
         }
+        features.add(0.0); //38
+        features.add(0.0); //39
+
         int feature33 = timeOfLowEquityLast;
         // features.put("feature33", (double) feature33);
         features.add((double) feature33);
+
 
         // Feature 34: Time of the high for EquityLast
         if (equityLast > highEquityLast) {
@@ -282,11 +292,12 @@ public class Feature {
         // features.put("feature40", (double) feature40);
         features.add((double) feature40);
 
+        features.add(0.0); //49
+
         // Feature 41: BBBB / CCCC
         double feature41 = BBBB / CCCC;
         // features.put("feature41", feature41);
         features.add(feature41);
-
         return features;
     }
 }
