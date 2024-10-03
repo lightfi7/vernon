@@ -1,4 +1,5 @@
 package utils;
+import app.MainDialog;
 import config.Config;
 
 import java.io.FileWriter;
@@ -11,6 +12,7 @@ public class Logger {
     private static final String LOG_FILE = Config.LOG_FILE;
 
     public static void log(String logString) {
+        MainDialog.instance.addLogMessage(logString);
         try (PrintWriter writer = new PrintWriter(new FileWriter(LOG_FILE, true))) {
             LocalDateTime currentTime = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

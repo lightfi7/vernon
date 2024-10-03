@@ -18,7 +18,9 @@ public class Application {
     public J48Classifier classifier;
     public InboundSocketServer server;
     public OutboundSocketClient client;
+    public MainDialog logDialog = new MainDialog();
     public boolean isReady = false;
+
 
     public Application() {
         instance = this;
@@ -26,8 +28,11 @@ public class Application {
     }
 
     public void Start() throws IOException, InterruptedException {
+        Logger.log("Press the button to start");
+        logDialog.setVisible(true);
+    }
 
-        Logger.log("Starting application...");
+    public void Run() throws IOException, InterruptedException {
 
         int port = Config.PORT; // 843 flash policy port
         server = new InboundSocketServer(classifier, port);
@@ -47,7 +52,5 @@ public class Application {
                 break;
             }
         }
-
     }
-
 }

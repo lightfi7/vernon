@@ -38,13 +38,12 @@ public class J48Classifier implements EventHandler {
             for (int i = 0; i < data.numAttributes(); i++) {
                 attributes.add(new Attribute(data.attribute(i).name()));
             }
+/*
 
             // Set the class index (assumed to be the last column)
             if (data.classIndex() == -1) {
                 data.setClassIndex(data.numAttributes() - 1);
             }
-
-//            System.out.println(data.get(1).numValues());
 
             // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
             Remove remove = new Remove();
@@ -61,6 +60,7 @@ public class J48Classifier implements EventHandler {
 
             // Now build the classifier on the entire dataset
             tree.buildClassifier(filteredData);
+*/
 
             Application.instance.isReady = true;
             Logger.log("Initialized J48 Classifier");
@@ -82,7 +82,6 @@ public class J48Classifier implements EventHandler {
                 data.setClassIndex(data.numAttributes() - 1);
             }
 
-            System.out.println(data.numClasses());
             // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
             Remove remove = new Remove();
             final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
