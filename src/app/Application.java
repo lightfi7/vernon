@@ -29,7 +29,7 @@ public class Application {
 
         Logger.log("Starting application...");
 
-        int port = 8887; // 843 flash policy port
+        int port = Config.PORT; // 843 flash policy port
         server = new InboundSocketServer(classifier, port);
         server.start();
 

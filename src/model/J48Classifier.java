@@ -1,5 +1,6 @@
 package model;
 import app.Application;
+import config.Config;
 import utils.EventHandler;
 import utils.Logger;
 import weka.core.Attribute;
@@ -26,9 +27,9 @@ public class J48Classifier implements EventHandler {
     public J48Classifier() {
 
         try {
-            Logger.log("Loading the model...");
+            Logger.log("Initializing J48 Classifier...");
             // Load the ARFF file
-            DataSource source = new DataSource("data/vernon.arff");
+            DataSource source = new DataSource(Config.ARFF_FILE);
             Instances data = source.getDataSet();
 
             // Set the attributes from data instance
@@ -61,7 +62,7 @@ public class J48Classifier implements EventHandler {
             tree.buildClassifier(filteredData);
 
             Application.instance.isReady = true;
-            Logger.log("Application is ready to start");
+            Logger.log("Initialized J48 Classifier");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,9 +74,14 @@ public class J48Classifier implements EventHandler {
     public void predict(double[] features) {
         try {
             Instances data = new Instances("InboundInstance", attributes, 0);
-            data.setClassIndex(0);
+
             data.add(new DenseInstance(1.0, features));
 
+            if (data.classIndex() == -1) {
+                data.setClassIndex(data.numAttributes() - 1);
+            }
+
+            System.out.println(data.numClasses());
             // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
             Remove remove = new Remove();
             final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
@@ -101,7 +107,6 @@ public class J48Classifier implements EventHandler {
             Logger.log("Outbound: "+predictions);
 
 //            Application.instance.client.send(predictions.toString());
-
 
             // Save the output with predictions to a new CSV file
             CSVSaver saver = new CSVSaver();

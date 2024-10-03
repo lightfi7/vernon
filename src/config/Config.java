@@ -2,7 +2,7 @@ package config;
 
 public class Config {
     /* MODEL*/
-
+    public static String ARFF_FILE = "data/vernon.arff";
     /* END MODEL*/
 
     /* SOCKET

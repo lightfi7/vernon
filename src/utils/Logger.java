@@ -16,7 +16,7 @@ public class Logger {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedTime = currentTime.format(formatter);
             System.out.println(formattedTime + " " + logString);
-            writer.printf("%s, %s%n", formattedTime, logString);
+            writer.printf("%s %s%n", formattedTime, logString);
         } catch (IOException e) {
             e.printStackTrace();
         }
