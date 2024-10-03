@@ -9,6 +9,12 @@ import java.io.InputStreamReader;
 
 public class Application {
 
+    public static Application instance;
+
+    public Application() {
+        instance = this;
+    }
+
     public void Start() throws IOException, InterruptedException {
         System.out.println("Starting...");
 
