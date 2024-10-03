@@ -11,6 +11,8 @@ public class Application {
 
     public static Application instance;
 
+    public boolean isReady = false;
+
     public Application() {
         instance = this;
     }

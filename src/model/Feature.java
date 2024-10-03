@@ -292,12 +292,15 @@ public class Feature {
         // features.put("feature40", (double) feature40);
         features.add((double) feature40);
 
-        features.add(0.0); //49
+        features.add(0.0);
 
         // Feature 41: BBBB / CCCC
         double feature41 = BBBB / CCCC;
         // features.put("feature41", feature41);
         features.add(feature41);
+
+        features.add(0.0);
+
         return features;
     }
 }
