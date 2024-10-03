@@ -1,5 +1,5 @@
 package utils;
 
-public interface DataHandler {
+public interface EventHandler {
     void onDataReceived(String jsonString);
 }

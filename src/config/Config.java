@@ -15,7 +15,7 @@ public class Config {
 
     /* LOGGER
     * */
-    public static String LOG_PATH = "";
+    public static String LOG_FILE = "data/log.ini";
 
     /* END LOGGER*/
 }

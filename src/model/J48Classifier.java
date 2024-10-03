@@ -1,6 +1,7 @@
 package model;
 import app.Application;
-import utils.DataHandler;
+import utils.EventHandler;
+import utils.Logger;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
@@ -17,7 +18,7 @@ import org.json.JSONObject;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
-public class J48Classifier implements DataHandler {
+public class J48Classifier implements EventHandler {
 
     public static J48 tree = new J48();
     public static ArrayList<Attribute> attributes = new ArrayList<>();
@@ -25,6 +26,7 @@ public class J48Classifier implements DataHandler {
     public J48Classifier() {
 
         try {
+            Logger.log("Loading the model...");
             // Load the ARFF file
             DataSource source = new DataSource("data/vernon.arff");
             Instances data = source.getDataSet();
@@ -40,7 +42,7 @@ public class J48Classifier implements DataHandler {
                 data.setClassIndex(data.numAttributes() - 1);
             }
 
-            System.out.println(data.get(1).numValues());
+//            System.out.println(data.get(1).numValues());
 
             // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
             Remove remove = new Remove();
@@ -59,25 +61,68 @@ public class J48Classifier implements DataHandler {
             tree.buildClassifier(filteredData);
 
             Application.instance.isReady = true;
+            Logger.log("Application is ready to start");
 
         } catch (Exception e) {
             e.printStackTrace();
+            Logger.log("Error: " + e.getMessage());
         }
 
     }
 
     public void predict(double[] features) {
         try {
+            Instances data = new Instances("InboundInstance", attributes, 0);
+            data.setClassIndex(0);
+            data.add(new DenseInstance(1.0, features));
+
+            // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
+            Remove remove = new Remove();
+            final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
+            remove.setOptions(removeOptions);
+
+            remove.setInputFormat(data);
+
+            Instances filteredData = Filter.useFilter(data, remove);
+
+            // Create a new dataset with predicted labels
+            Instances outputData = new Instances(data);
+            outputData.insertAttributeAt(new weka.core.Attribute("PredictedClass"), outputData.numAttributes());
+
+            double[] predictions = new double[outputData.numInstances()];
+
+            // Classify each instance and add the prediction to the outputData
+            for (int i = 0; i < filteredData.numInstances(); i++) {
+                double prediction = tree.classifyInstance(filteredData.instance(i));
+                predictions[i] = prediction;
+                outputData.instance(i).setValue(outputData.numAttributes() - 1, prediction);
+            }
+
+            Logger.log("Outbound: "+predictions);
+
+//            Application.instance.client.send(predictions.toString());
+
+
+            // Save the output with predictions to a new CSV file
+            CSVSaver saver = new CSVSaver();
+            saver.setInstances(outputData);
+            saver.setFile(new File("output.csv"));
+            saver.writeBatch();
+
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log("Error: " + e.getMessage());
         }
     }
 
     @Override
     public void onDataReceived(String jsonString) {
         try {
-            if(!Application.instance.isReady)
+            Logger.log("Inbound data: "+jsonString);
+
+            if(!Application.instance.isReady){
+                Logger.log("Application isn't ready");
                 return;
+            }
 
             // Parse JSON string to a JSONObject
             JSONObject jsonObject = new JSONObject(jsonString);
@@ -100,39 +145,12 @@ public class J48Classifier implements DataHandler {
                 values[i] = features.get(i);
             }
 
-            Instances data = new Instances("InboundInstance", attributes, 0);
-            data.setClassIndex(0);
-            data.add(new DenseInstance(1.0, values));
+            predict(values);
 
-            // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
-            Remove remove = new Remove();
-            final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
-            remove.setOptions(removeOptions);
 
-            remove.setInputFormat(data);
-
-            Instances filteredData = Filter.useFilter(data, remove);
-
-            // Create a new dataset with predicted labels
-            Instances outputData = new Instances(data);
-            outputData.insertAttributeAt(new weka.core.Attribute("PredictedClass"), outputData.numAttributes());
-
-            // Classify each instance and add the prediction to the outputData
-            for (int i = 0; i < filteredData.numInstances(); i++) {
-                double prediction = tree.classifyInstance(filteredData.instance(i));
-                outputData.instance(i).setValue(outputData.numAttributes() - 1, prediction);
-            }
-
-            // Save the output with predictions to a new CSV file
-            CSVSaver saver = new CSVSaver();
-            saver.setInstances(outputData);
-            saver.setFile(new File("output.csv"));
-            saver.writeBatch();
-
-            System.out.println("Final model built on the entire dataset and output saved to CSV.");
         }catch (Exception e){
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            Logger.log("Error: " + e.getMessage());
         }
     }
 

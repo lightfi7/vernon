@@ -1,8 +1,5 @@
 package socket;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -12,13 +9,13 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import utils.DataHandler;
+import utils.EventHandler;
 
 public class InboundSocketServer extends WebSocketServer{
 
-    DataHandler dataHandler;
+    EventHandler dataHandler;
 
-    public InboundSocketServer(DataHandler dataHandler, int port) throws UnknownHostException {
+    public InboundSocketServer(EventHandler dataHandler, int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
         this.dataHandler = dataHandler;
     }
