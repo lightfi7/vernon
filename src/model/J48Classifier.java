@@ -35,28 +35,28 @@ public class J48Classifier implements DataHandler {
                 attributes.add(new Attribute(data.attribute(i).name()));
             }
 
-//            // Set the class index (assumed to be the last column)
-//            if (data.classIndex() == -1) {
-//                data.setClassIndex(data.numAttributes() - 1);
-//            }
-//
-//            System.out.println(data.get(1).numValues());
-//
-//            // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
-//            Remove remove = new Remove();
-//            final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
-//            remove.setOptions(removeOptions);
-//
-//            remove.setInputFormat(data);
-//
-//            Instances filteredData = Filter.useFilter(data, remove);
-//
-//            // Train the J48 model with specified parameters (-c 0.25 -m 2)
-//            String[] options = new String[]{"-C", "0.25", "-M", "2"};
-//            tree.setOptions(options);
-//
-//            // Now build the classifier on the entire dataset
-//            tree.buildClassifier(filteredData);
+            // Set the class index (assumed to be the last column)
+            if (data.classIndex() == -1) {
+                data.setClassIndex(data.numAttributes() - 1);
+            }
+
+            System.out.println(data.get(1).numValues());
+
+            // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
+            Remove remove = new Remove();
+            final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
+            remove.setOptions(removeOptions);
+
+            remove.setInputFormat(data);
+
+            Instances filteredData = Filter.useFilter(data, remove);
+
+            // Train the J48 model with specified parameters (-c 0.25 -m 2)
+            String[] options = new String[]{"-C", "0.25", "-M", "2"};
+            tree.setOptions(options);
+
+            // Now build the classifier on the entire dataset
+            tree.buildClassifier(filteredData);
 
             Application.instance.isReady = true;
 
@@ -113,21 +113,21 @@ public class J48Classifier implements DataHandler {
 
             Instances filteredData = Filter.useFilter(data, remove);
 
-//            // Create a new dataset with predicted labels
-//            Instances outputData = new Instances(data);
-//            outputData.insertAttributeAt(new weka.core.Attribute("PredictedClass"), outputData.numAttributes());
-//
-//            // Classify each instance and add the prediction to the outputData
-//            for (int i = 0; i < filteredData.numInstances(); i++) {
-//                double prediction = tree.classifyInstance(filteredData.instance(i));
-//                outputData.instance(i).setValue(outputData.numAttributes() - 1, prediction);
-//            }
-//
-//            // Save the output with predictions to a new CSV file
-//            CSVSaver saver = new CSVSaver();
-//            saver.setInstances(outputData);
-//            saver.setFile(new File("output.csv"));
-//            saver.writeBatch();
+            // Create a new dataset with predicted labels
+            Instances outputData = new Instances(data);
+            outputData.insertAttributeAt(new weka.core.Attribute("PredictedClass"), outputData.numAttributes());
+
+            // Classify each instance and add the prediction to the outputData
+            for (int i = 0; i < filteredData.numInstances(); i++) {
+                double prediction = tree.classifyInstance(filteredData.instance(i));
+                outputData.instance(i).setValue(outputData.numAttributes() - 1, prediction);
+            }
+
+            // Save the output with predictions to a new CSV file
+            CSVSaver saver = new CSVSaver();
+            saver.setInstances(outputData);
+            saver.setFile(new File("output.csv"));
+            saver.writeBatch();
 
             System.out.println("Final model built on the entire dataset and output saved to CSV.");
         }catch (Exception e){

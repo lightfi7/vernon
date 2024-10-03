@@ -77,6 +77,7 @@ public class Feature {
 
         // Feature 5: Minutes since low of AAAA
         int feature5 = feature1 - timeOfLowAAAA;
+        features.add((double) feature5);
 
         // Feature 6: High of the day for AAAA
         if (AAAA > highAAAA) {
@@ -235,13 +236,14 @@ public class Feature {
         // features.put("feature32", (double) feature32);
         features.add((double) feature32);
 
+        features.add(0.0); //38
+        features.add(0.0); //39
+
         // Feature 33: Time of the low for EquityLast
         if (equityLast < lowEquityLast) {
             lowEquityLast = equityLast;
             timeOfLowEquityLast = feature1;
         }
-        features.add(0.0); //38
-        features.add(0.0); //39
 
         int feature33 = timeOfLowEquityLast;
         // features.put("feature33", (double) feature33);
@@ -292,13 +294,12 @@ public class Feature {
         // features.put("feature40", (double) feature40);
         features.add((double) feature40);
 
-        features.add(0.0);
-
         // Feature 41: BBBB / CCCC
         double feature41 = BBBB / CCCC;
         // features.put("feature41", feature41);
         features.add(feature41);
 
+        features.add(0.0);
         features.add(0.0);
 
         return features;
