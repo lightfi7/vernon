@@ -12,11 +12,15 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import utils.DataHandler;
 
-public class InboundSocketServer extends WebSocketServer {
+public class InboundSocketServer extends WebSocketServer{
 
-    public InboundSocketServer(int port) throws UnknownHostException {
+    DataHandler dataHandler;
+
+    public InboundSocketServer(DataHandler dataHandler, int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
+        this.dataHandler = dataHandler;
     }
 
     public InboundSocketServer(InetSocketAddress address) {
@@ -45,6 +49,7 @@ public class InboundSocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         broadcast(message);
+        dataHandler.onDataReceived(message);
         System.out.println(conn + ": " + message);
     }
 
@@ -55,7 +60,7 @@ public class InboundSocketServer extends WebSocketServer {
     }
 
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    /*public static void main(String[] args) throws InterruptedException, IOException {
         int port = 8887; // 843 flash policy port
         try {
             port = Integer.parseInt(args[0]);
@@ -74,7 +79,7 @@ public class InboundSocketServer extends WebSocketServer {
                 break;
             }
         }
-    }
+    }*/
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
@@ -90,4 +95,5 @@ public class InboundSocketServer extends WebSocketServer {
         setConnectionLostTimeout(0);
         setConnectionLostTimeout(100);
     }
+
 }
