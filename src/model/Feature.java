@@ -300,7 +300,7 @@ public class Feature {
         features.add(feature41);
 
         features.add(0.0);
-        features.add(0.0);
+        features.add(1.0);
 
         return features;
     }
