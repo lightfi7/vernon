@@ -1,6 +1,7 @@
 package app;
 
 import config.Config;
+import dialog.MainDialog;
 import model.J48Classifier;
 import socket.InboundSocketServer;
 import socket.OutboundSocketClient;

@@ -1,5 +1,5 @@
 package utils;
-import app.MainDialog;
+import dialog.MainDialog;
 import config.Config;
 
 import java.io.FileWriter;

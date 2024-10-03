@@ -1,4 +1,7 @@
-package app;
+package dialog;
+import app.Application;
+import config.Config;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +13,7 @@ public class MainDialog extends JDialog {
     private DefaultListModel<String> logListModel;
 
     public MainDialog() {
-        setTitle("Vernon");
+        setTitle(Config.APP_NAME);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 

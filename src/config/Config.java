@@ -1,6 +1,10 @@
 package config;
 
 public class Config {
+    /* APP*/
+       public static String APP_NAME = "Vernon";
+    /* END APP*/
+
     /* MODEL*/
     public static String ARFF_FILE = "data/vernon.arff";
     /* END MODEL*/
