@@ -12,6 +12,7 @@ import weka.classifiers.trees.J48;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,10 +102,11 @@ public class J48Classifier implements EventHandler {
             for (int i = 0; i < filteredData.numInstances(); i++) {
                 double prediction = tree.classifyInstance(filteredData.instance(i));
                 predictions[i] = prediction;
+                System.out.println(prediction);
                 outputData.instance(i).setValue(outputData.numAttributes() - 1, prediction);
             }
 
-            Logger.log("Outbound: "+predictions);
+            Logger.log("Outbound: " + Arrays.toString(predictions));
 
 //            Application.instance.client.send(predictions.toString());
 
