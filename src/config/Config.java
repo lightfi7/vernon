@@ -7,6 +7,7 @@ public class Config {
 
     /* MODEL*/
     public static String ARFF_FILE = "data/vernon.arff";
+    public static String OUTPUT_FILE = "data/output.csv";
     /* END MODEL*/
 
     /* SOCKET

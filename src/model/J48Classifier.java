@@ -38,7 +38,6 @@ public class J48Classifier implements EventHandler {
             for (int i = 0; i < data.numAttributes(); i++) {
                 attributes.add(new Attribute(data.attribute(i).name()));
             }
-/*
 
             // Set the class index (assumed to be the last column)
             if (data.classIndex() == -1) {
@@ -60,7 +59,6 @@ public class J48Classifier implements EventHandler {
 
             // Now build the classifier on the entire dataset
             tree.buildClassifier(filteredData);
-*/
 
             Application.instance.isReady = true;
             Logger.log("Initialized J48 Classifier");
@@ -112,7 +110,7 @@ public class J48Classifier implements EventHandler {
             // Save the output with predictions to a new CSV file
             CSVSaver saver = new CSVSaver();
             saver.setInstances(outputData);
-            saver.setFile(new File("output.csv"));
+            saver.setFile(new File(Config.OUTPUT_FILE));
             saver.writeBatch();
 
         } catch (Exception e) {
