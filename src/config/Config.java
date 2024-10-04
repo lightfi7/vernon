@@ -6,7 +6,7 @@ public class Config {
     /* END APP*/
 
     /* MODEL*/
-    public static int MODEL_TYPE = 1;
+    public static int M = 1; // 1,2,3
     public static String ARFF_FILE = "data/vernon.arff";
     public static String OUTPUT_FILE = "data/output.csv";
     /* END MODEL*/
