@@ -12,7 +12,6 @@ import weka.classifiers.trees.J48;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +23,9 @@ public class J48Classifier implements EventHandler {
 
     public static J48 tree = new J48();
     public static ArrayList<Attribute> attributes = new ArrayList<>();
+    public int lastPosition = -1;
+    public int lastOutput = -1;
+    public Double lastEquity = 0.0;
 
     public J48Classifier() {
 
@@ -54,8 +56,16 @@ public class J48Classifier implements EventHandler {
             Instances filteredData = Filter.useFilter(data, remove);
 
             // Train the J48 model with specified parameters (-c 0.25 -m 2)
-            String[] options = new String[]{"-C", "0.25", "-M", "2"};
-            tree.setOptions(options);
+            if(Config.M == 2){
+                String[] options = new String[]{"-C", "0.25", "-M", "2"};
+                tree.setOptions(options);
+            }else if(Config.M == 7){
+                String[] options = new String[]{"-C", "0.25", "-M", "7"};
+                tree.setOptions(options);
+            }else if(Config.M == 15){
+                String[] options = new String[]{"-C", "0.25", "-M", "15"};
+                tree.setOptions(options);
+            }
 
             // Now build the classifier on the entire dataset
             tree.buildClassifier(filteredData);
@@ -70,7 +80,7 @@ public class J48Classifier implements EventHandler {
 
     }
 
-    public void predict(double[] features) {
+    public void predict(double[] features, String time, Double epoch, Double equityLast) {
         try {
             Instances data = new Instances("InboundInstance", attributes, 0);
 
@@ -93,19 +103,46 @@ public class J48Classifier implements EventHandler {
             Instances outputData = new Instances(data);
             outputData.insertAttributeAt(new weka.core.Attribute("PredictedClass"), outputData.numAttributes());
 
-            double[] predictions = new double[outputData.numInstances()];
 
             // Classify each instance and add the prediction to the outputData
+            /*
+            double[] predictions = new double[outputData.numInstances()];
             for (int i = 0; i < filteredData.numInstances(); i++) {
                 double prediction = tree.classifyInstance(filteredData.instance(i));
                 predictions[i] = prediction;
                 System.out.println(prediction);
                 outputData.instance(i).setValue(outputData.numAttributes() - 1, prediction);
+            }*/
+
+            double prediction = tree.classifyInstance(filteredData.instance(0));
+            System.out.println(prediction);
+            outputData.instance(0).setValue(outputData.numAttributes() - 1, prediction);
+
+            Logger.log("Outbound: " + prediction);
+
+            int ep = epoch.intValue()/10000;
+            ep*=10;
+
+            if (lastPosition == 0) {
+                if (prediction == 1)
+                {
+                    lastPosition = 1;
+                    Logger.log(String.format("COVER %d SPY COVER %s %s", ep, lastEquity.toString(), equityLast.toString()));
+                    Logger.log(String.format("BUY %d SPY BUY %s %s", ep+1, lastEquity.toString(), equityLast.toString()));
+                    Application.instance.client.send(String.format("COVER %d SPY COVER %s %s", ep, lastEquity.toString(), equityLast.toString()));
+                    Application.instance.client.send(String.format("BUY %d SPY BUY %s %s", ep+1, lastEquity.toString(), equityLast.toString()));
+                    lastEquity = equityLast;
+                }
+            } else if (lastPosition == 1) {
+                if (prediction == 0) {
+                    lastPosition = 0;
+                    Logger.log(String.format("SELL %d SPY SELL %s %s", ep, lastEquity.toString(), equityLast.toString()));
+                    Logger.log(String.format("SHORT %d SPY SHORT %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
+                    Application.instance.client.send(String.format("SELL %d SPY SELL %s %s", ep, lastEquity.toString(), equityLast.toString()));
+                    Application.instance.client.send(String.format("SHORT %d SPY SHORT %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
+                    lastEquity = equityLast;
+                }
             }
-
-            Logger.log("Outbound: " + Arrays.toString(predictions));
-
-//            Application.instance.client.send(predictions.toString());
 
             // Save the output with predictions to a new CSV file
             CSVSaver saver = new CSVSaver();
@@ -149,7 +186,7 @@ public class J48Classifier implements EventHandler {
                 values[i] = features.get(i);
             }
 
-            predict(values);
+            predict(values,jsonObject.getString("time"), jsonObject.getDouble("epoch"),jsonObject.getDouble("equityLast"));
 
 
         }catch (Exception e){
