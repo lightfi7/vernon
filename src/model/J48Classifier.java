@@ -130,7 +130,7 @@ public class J48Classifier implements EventHandler {
                     Logger.log(String.format("COVER %d SPY COVER %s %s", ep, lastEquity.toString(), equityLast.toString()));
                     Logger.log(String.format("BUY %d SPY BUY %s %s", ep+1, lastEquity.toString(), equityLast.toString()));
                     Application.instance.client.send(String.format("COVER %d SPY COVER %s %s", ep, lastEquity.toString(), equityLast.toString()));
-                    Application.instance.client.send(String.format("BUY %d SPY BUY %s %s", ep+1, lastEquity.toString(), equityLast.toString()));
+                    Application.instance.client.send(String.format("BUY %d SPY BUY %s %s", ep+1, lastEquity.toString(), equityLast-10.0));
                     lastEquity = equityLast;
                 }
             } else if (lastPosition == 1) {
@@ -139,7 +139,7 @@ public class J48Classifier implements EventHandler {
                     Logger.log(String.format("SELL %d SPY SELL %s %s", ep, lastEquity.toString(), equityLast.toString()));
                     Logger.log(String.format("SHORT %d SPY SHORT %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
                     Application.instance.client.send(String.format("SELL %d SPY SELL %s %s", ep, lastEquity.toString(), equityLast.toString()));
-                    Application.instance.client.send(String.format("SHORT %d SPY SHORT %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
+                    Application.instance.client.send(String.format("SHORT %d SPY SHORT %s %s", ep + 1, equityLast.toString(), lastEquity+10.0));
                     lastEquity = equityLast;
                 }
             }
