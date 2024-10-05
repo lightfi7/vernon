@@ -11,8 +11,20 @@ public class MainDialog extends JDialog {
     public static MainDialog instance = null;
     private JList<String> logList;
     private DefaultListModel<String> logListModel;
+    public JButton startButton = new JButton("Start");
+    public JMenuBar menuBar = new JMenuBar();
+    public JMenu modelMenu = new JMenu("Model");
+    public JMenu trainMenu = new JMenu("Train");
+    public JMenuItem m2Item = new JMenuItem("M2");
+    public JMenuItem m7Item = new JMenuItem("M7");
+    public JMenuItem m15Item = new JMenuItem("M15");
+    public JMenuItem t2Item = new JMenuItem("M2");
+    public JMenuItem t7Item = new JMenuItem("M7");
+    public JMenuItem t15Item = new JMenuItem("M15");
+
 
     public MainDialog() {
+
         setTitle(Config.APP_NAME);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -22,11 +34,7 @@ public class MainDialog extends JDialog {
         logList = new JList<>(logListModel);
 
         // Create a menu
-        JMenuBar menuBar = new JMenuBar();
-        JMenu modelMenu = new JMenu("Model");
-        JMenu trainMenu = new JMenu("Train");
 
-        JMenuItem m2Item = new JMenuItem("M2");
         m2Item.addActionListener(new ActionListener() {
 
             @Override
@@ -35,7 +43,6 @@ public class MainDialog extends JDialog {
             }
         });
 
-        JMenuItem m7Item = new JMenuItem("M7");
         m7Item.addActionListener(new ActionListener() {
 
             @Override
@@ -44,7 +51,6 @@ public class MainDialog extends JDialog {
             }
         });
 
-        JMenuItem m15Item = new JMenuItem("M15");
         m15Item.addActionListener(new ActionListener() {
 
             @Override
@@ -58,7 +64,6 @@ public class MainDialog extends JDialog {
         modelMenu.add(m7Item);
         modelMenu.add(m15Item);
 
-        JMenuItem t2Item = new JMenuItem("M2");
         t2Item.addActionListener(new ActionListener() {
 
             @Override
@@ -67,7 +72,6 @@ public class MainDialog extends JDialog {
             }
         });
 
-        JMenuItem t7Item = new JMenuItem("M7");
         t7Item.addActionListener(new ActionListener() {
 
             @Override
@@ -76,7 +80,6 @@ public class MainDialog extends JDialog {
             }
         });
 
-        JMenuItem t15Item = new JMenuItem("M15");
         t15Item.addActionListener(new ActionListener() {
 
             @Override
@@ -96,20 +99,21 @@ public class MainDialog extends JDialog {
         JScrollPane scrollPane = new JScrollPane(logList);
 
         // Create a start button
-        JButton startButton = new JButton("Start");
+//        JButton startButton = new JButton("Start");
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Add your start button logic here
                 System.out.println("Start button clicked");
                 try {
-                    Application.instance.Run();
+                    Application.instance.run();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
 
+        startButton.setEnabled(false);
         // Add components to the dialog
         add(menuBar, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);

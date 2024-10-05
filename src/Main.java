@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         try{
             Application app = new Application();
-            app.Start();
+            app.start();
         }catch (Exception e){
             e.printStackTrace();
             System.out.println(e.getMessage());

@@ -55,22 +55,22 @@ public class J48Classifier implements EventHandler {
 
     public void load(int M) throws Exception {
         if (this.M == M) return;
-        Logger.log("Loading M" + M + "model...");
-        Application.instance.isReady = false;
+        Logger.log("Loading M" + M + " model...");
+        Application.instance.setIsReady(false);
         // deserialize model
         ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream("data/j48_" + M + ".model"));
         tree = (J48) ois.readObject();
         ois.close();
         this.M = M;
-        Logger.log("Loaded M" + M + "model");
-        Application.instance.isReady = true;
+        Logger.log("Loaded M" + M + " model");
+        Application.instance.setIsReady(true);
     }
 
     public void train(int M) {
 
         try {
-            Logger.log("Training M" + M + "model...");
+            Logger.log("Training M" + M + " model...");
             tree = new J48();
             // Load the ARFF file
             DataSource source = new DataSource(Config.ARFF_FILE);
@@ -114,7 +114,7 @@ public class J48Classifier implements EventHandler {
             oos.writeObject(tree);
             oos.flush();
             oos.close();
-            Logger.log("Trained M" + M + "model");
+            Logger.log("Trained M" + M + " model");
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log("Error: " + e.getMessage());
@@ -123,11 +123,11 @@ public class J48Classifier implements EventHandler {
 
     public void change(int M) {
         try {
-            Logger.log("Changing to M" + M + "model...");
-            Application.instance.isReady = false;
+            Logger.log("Changing to M" + M + " model...");
+            Application.instance.setIsReady(false);
             load(M);
-            Logger.log("Changed to M" + M + "model");
-            Application.instance.isReady = true;
+            Logger.log("Changed to M" + M + " model");
+            Application.instance.setIsReady(true);
         } catch (Exception e) {
             Logger.log("Error: " + e.getMessage());
 

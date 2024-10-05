@@ -19,21 +19,27 @@ public class Application {
     public J48Classifier classifier;
     public InboundSocketServer server;
     public OutboundSocketClient client;
-    public MainDialog logDialog = new MainDialog();
+    public MainDialog mainDialog = new MainDialog();
     public boolean isReady = false;
 
 
     public Application() {
         instance = this;
+        mainDialog.setVisible(true);
         classifier = new J48Classifier();
     }
 
-    public void Start() throws IOException, InterruptedException {
-        Logger.log("Press the button to start");
-        logDialog.setVisible(true);
+    public void setIsReady(boolean ready){
+        isReady = ready;
+        MainDialog.instance.startButton.setEnabled(ready);
     }
 
-    public void Run() throws IOException, InterruptedException {
+    public void start() throws IOException, InterruptedException {
+        Logger.log("Press the button to start");
+        setIsReady(true);
+    }
+
+    public void run() throws IOException, InterruptedException {
 
         int port = Config.PORT; // 843 flash policy port
         server = new InboundSocketServer(classifier, port);
