@@ -8,7 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainDialog extends JDialog {
+
     public static MainDialog instance = null;
+
     private JList<String> logList;
     private DefaultListModel<String> logListModel;
     public JButton startButton = new JButton("Start");
