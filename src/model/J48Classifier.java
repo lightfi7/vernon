@@ -84,9 +84,9 @@ public class J48Classifier implements EventHandler {
             if (data.classIndex() == -1) {
                 data.setClassIndex(data.numAttributes() - 1);
             }
-            // Remove specific columns (1st, 2nd, 3rd, 5th, 14th, 38th, 39th, 49th)
+            // Remove specific columns (1st, 2nd, 3rd, 5th, 13th, 38th, 39th, 49th)
             Remove remove = new Remove();
-            final String[] removeOptions = new String[]{"-R", "1,2,3,5,14,38,39,49"};
+            final String[] removeOptions = new String[]{"-R", "1,2,3,5,13,38,39,49"};
             remove.setOptions(removeOptions);
 
             remove.setInputFormat(data);

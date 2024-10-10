@@ -96,12 +96,12 @@ public class Feature {
         int feature8 = feature1 - timeOfHighAAAA;
         // features.put("feature8", (double) feature8);
         features.add((double) feature8);
+        features.add(0.0); //13
 
         // Feature 9: 1 / BBBB
         double feature9 = 1.0 / BBBB;
         // features.put("feature9", feature9);
         features.add((double) feature9);
-        features.add(0.0); //14
 
         // Feature 10: High of Feature 9
         if (feature9 > highFeature9) {
