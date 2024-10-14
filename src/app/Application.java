@@ -5,6 +5,7 @@ import dialog.MainDialog;
 import model.J48Classifier;
 import socket.InboundSocketServer;
 import socket.OutboundSocketClient;
+import socket.OutboundTcpSocketClient;
 import utils.Logger;
 
 import java.io.BufferedReader;
@@ -18,7 +19,8 @@ public class Application {
 
     public J48Classifier classifier;
     public InboundSocketServer server;
-    public OutboundSocketClient client;
+//    public OutboundSocketClient client;
+    public OutboundTcpSocketClient client;
     public MainDialog mainDialog = new MainDialog();
     public boolean isReady = false;
 
@@ -47,8 +49,11 @@ public class Application {
 //
 //        Logger.log("Server started on port: " + server.getPort());
 
-        client = new OutboundSocketClient(URI.create(Config.ENDPOINT), classifier);
-        Logger.log("Successfully connected to endpoint at: " + Config.ENDPOINT);
+//        client = new OutboundSocketClient(URI.create(Config.ENDPOINT), classifier);
+//        Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT);
+
+        client = new OutboundTcpSocketClient(URI.create(Config.ENDPOINT), classifier);
+        Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT);
 
         BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
