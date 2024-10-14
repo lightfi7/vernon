@@ -24,7 +24,7 @@ public class J48Classifier implements EventHandler {
     public static J48 tree = null;
     public static ArrayList<Attribute> attributes = new ArrayList<>();
     public int lastPosition = -1;
-    public int M = Config.M;
+    public int M = 0;
     public Double lastEquity = 0.0;
 
     public J48Classifier() {
@@ -41,7 +41,7 @@ public class J48Classifier implements EventHandler {
                 attributes.add(new Attribute(data.attribute(i).name()));
             }
 
-            load(Config.M);
+            this.load(Config.M);
             //train(Config.M);
 
             Logger.log("Initialized J48 Classifier");

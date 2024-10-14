@@ -14,8 +14,8 @@ public class Config {
     /* SOCKET
     * */
     public static String HOST = "localhost";
-    public static int PORT = 8777;
-    public static String ENDPOINT = "ws:localhost:8778";
+    public static int PORT = 80;
+    public static String ENDPOINT = "ws:3.145.21.56:8887";
 
     public static String SELL_CMD = "Sell";
     public static String BUY_CMD = "Buy";
