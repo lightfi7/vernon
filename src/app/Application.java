@@ -48,7 +48,7 @@ public class Application {
 //        Logger.log("Server started on port: " + server.getPort());
 
         client = new OutboundSocketClient(URI.create(Config.ENDPOINT), classifier);
-        Logger.log("Successfully connected to endpoint at: " + Config.ENDPOINT);
+        Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT);
 
         BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
