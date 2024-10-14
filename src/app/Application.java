@@ -53,9 +53,9 @@ public class Application {
         BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             String in = sysin.readLine();
-            server.broadcast(in);
+//            server.broadcast(in);
             if (in.equals("exit")) {
-                server.stop(1000);
+//                server.stop(1000);
                 break;
             }
         }
