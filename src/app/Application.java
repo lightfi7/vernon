@@ -41,13 +41,13 @@ public class Application {
 
     public void run() throws IOException, InterruptedException {
 
-        int port = Config.PORT; // 843 flash policy port
-        server = new InboundSocketServer(classifier, port);
-        server.start();
+//        int port = Config.PORT; // 843 flash policy port
+//        server = new InboundSocketServer(classifier, port);
+//        server.start();
+//
+//        Logger.log("Server started on port: " + server.getPort());
 
-        Logger.log("Server started on port: " + server.getPort());
-
-        client = new OutboundSocketClient(URI.create(Config.ENDPOINT));
+        client = new OutboundSocketClient(URI.create(Config.ENDPOINT), classifier);
         Logger.log("Successfully connected to endpoint at: " + Config.ENDPOINT);
 
         BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));

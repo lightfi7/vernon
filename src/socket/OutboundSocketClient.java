@@ -6,6 +6,7 @@ import java.util.Map;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
+import utils.EventHandler;
 
 /**
  * This example demonstrates how to create a websocket connection to a server. Only the most
@@ -14,16 +15,21 @@ import org.java_websocket.handshake.ServerHandshake;
 
 public class OutboundSocketClient extends WebSocketClient {
 
-    public OutboundSocketClient(URI serverUri, Draft draft) {
+    EventHandler dataHandler;
+
+    public OutboundSocketClient(URI serverUri, EventHandler dataHandler, Draft draft) {
         super(serverUri, draft);
+        this.dataHandler = dataHandler;
     }
 
-    public OutboundSocketClient(URI serverURI) {
+    public OutboundSocketClient(URI serverURI, EventHandler dataHandler) {
         super(serverURI);
+        this.dataHandler = dataHandler;
     }
 
-    public OutboundSocketClient(URI serverUri, Map<String, String> httpHeaders) {
+    public OutboundSocketClient(URI serverUri, Map<String, String> httpHeaders, EventHandler dataHandler) {
         super(serverUri, httpHeaders);
+        this.dataHandler = dataHandler;
     }
 
     @Override
@@ -35,6 +41,7 @@ public class OutboundSocketClient extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
+        dataHandler.onDataReceived(message);
         System.out.println("received: " + message);
     }
 
