@@ -54,6 +54,7 @@ public class Application {
 
         client = new OutboundTcpSocketClient(URI.create(Config.ENDPOINT), classifier);
         Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT);
+        client.connect();
 
         BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
