@@ -59,10 +59,5 @@ public class OutboundSocketClient extends WebSocketClient {
         // if the error is fatal then onClose will be called additionally
     }
 
-    public static void main(String[] args) throws URISyntaxException {
-        OutboundSocketClient c = new OutboundSocketClient(new URI(
-                "ws://localhost:8887")); // more about drafts here: http://github.com/TooTallNate/Java-WebSocket/wiki/Drafts
-        c.connect();
-    }
 
 }
