@@ -99,7 +99,7 @@ public class Feature {
         features.add(0.0); //13
 
         // Feature 9: 1 / BBBB
-        double feature9 = 1.0 / BBBB;
+        double feature9 = BBBB;
         // features.put("feature9", feature9);
         features.add((double) feature9);
 
