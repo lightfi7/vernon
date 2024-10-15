@@ -6,6 +6,7 @@ import utils.Logger;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
+import weka.core.converters.CSVLoader;
 import weka.core.converters.CSVSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.classifiers.trees.J48;
@@ -180,8 +181,8 @@ public class J48Classifier implements EventHandler {
             if (lastPosition == 0) {
                 if (prediction == 1) {
                     lastPosition = 1;
-                    Logger.log(String.format("COVER %d SPY COVER %s %s", ep, lastEquity.toString(), equityLast.toString()));
-                    Logger.log(String.format("BUY %d SPY BUY %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
+                    Logger.log2(String.format("COVER %d SPY COVER %s %s", ep, lastEquity.toString(), equityLast.toString()));
+                    Logger.log2(String.format("BUY %d SPY BUY %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
                     Application.instance.client.send(String.format("COVER %d SPY COVER %s %s", ep, lastEquity.toString(), equityLast.toString()));
                     Application.instance.client.send(String.format("BUY %d SPY BUY %s %s", ep + 1, lastEquity.toString(), equityLast - 10.0));
                     lastEquity = equityLast;
@@ -189,8 +190,8 @@ public class J48Classifier implements EventHandler {
             } else if (lastPosition == 1) {
                 if (prediction == 0) {
                     lastPosition = 0;
-                    Logger.log(String.format("SELL %d SPY SELL %s %s", ep, lastEquity.toString(), equityLast.toString()));
-                    Logger.log(String.format("SHORT %d SPY SHORT %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
+                    Logger.log2(String.format("SELL %d SPY SELL %s %s", ep, lastEquity.toString(), equityLast.toString()));
+                    Logger.log2(String.format("SHORT %d SPY SHORT %s %s", ep + 1, lastEquity.toString(), equityLast.toString()));
                     Application.instance.client.send(String.format("SELL %d SPY SELL %s %s", ep, lastEquity.toString(), equityLast.toString()));
                     Application.instance.client.send(String.format("SHORT %d SPY SHORT %s %s", ep + 1, equityLast.toString(), lastEquity + 10.0));
                     lastEquity = equityLast;
@@ -198,10 +199,7 @@ public class J48Classifier implements EventHandler {
             }
 
             // Save the output with predictions to a new CSV file
-            CSVSaver saver = new CSVSaver();
-            saver.setInstances(outputData);
-            saver.setFile(new File(Config.OUTPUT_FILE));
-            saver.writeBatch();
+
 
         } catch (Exception e) {
             Logger.log("Error: " + e.getMessage());

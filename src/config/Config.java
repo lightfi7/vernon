@@ -28,6 +28,7 @@ public class Config {
     /* LOGGER
     * */
     public static String LOG_FILE = "data/log.ini";
+    public static String M_LOG_FILE = "data/m_log.ini";
 
     /* END LOGGER*/
 }

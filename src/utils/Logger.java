@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Logger {
     private static final String LOG_FILE = Config.LOG_FILE;
+    private static final String M_LOG_FILE = Config.M_LOG_FILE;
 
     public static void log(String logString) {
         MainDialog.instance.addLogMessage(logString);
@@ -19,6 +20,18 @@ public class Logger {
             String formattedTime = currentTime.format(formatter);
             System.out.println(formattedTime + " " + logString);
             writer.printf("%s %s%n", formattedTime, logString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void log2(String logString) {
+        MainDialog.instance.addLogMessage(logString);
+        try (PrintWriter writer = new PrintWriter(new FileWriter(M_LOG_FILE, true))) {
+            LocalDateTime currentTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedTime = currentTime.format(formatter);
+            System.out.println(formattedTime + " " + logString);
+            writer.printf("%s%n",logString);
         } catch (IOException e) {
             e.printStackTrace();
         }
