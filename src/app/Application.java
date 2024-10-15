@@ -55,14 +55,15 @@ public class Application {
         client = new OutboundTcpSocketClient(URI.create(Config.ENDPOINT), classifier);
         Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT);
 
-        BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
-        while (true) {
-            String in = sysin.readLine();
-//            server.broadcast(in);
-            if (in.equals("exit")) {
-//                server.stop(1000);
-                break;
-            }
-        }
+//        BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
+//        while (true) {
+//            String in = sysin.readLine();
+//            System.out.println(in);
+////            server.broadcast(in);
+//            if (in.equals("exit")) {
+////                server.stop(1000);
+//                break;
+//            }
+//        }
     }
 }
