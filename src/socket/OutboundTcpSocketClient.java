@@ -28,7 +28,7 @@ public class OutboundTcpSocketClient {
 
     public void connect() {
         try {
-            send("Hello, it is me. Mario :)");
+            send("Hello :)");
             System.out.println("Opened connection to " + socket.getRemoteSocketAddress());
 
             // Start a thread to listen for incoming messages
