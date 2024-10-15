@@ -15,7 +15,8 @@ public class Config {
     * */
     public static String HOST = "localhost";
     public static int PORT = 80;
-    public static String ENDPOINT = "http://3.145.21.56:8887";
+//    public static String ENDPOINT = "http://3.145.21.56:8887";
+    public static String ENDPOINT = "http://127.0.0.1:8887";
 
     public static String SELL_CMD = "Sell";
     public static String BUY_CMD = "Buy";
