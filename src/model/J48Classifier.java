@@ -24,7 +24,7 @@ public class J48Classifier implements EventHandler {
 
     public static J48 tree = null;
     public static ArrayList<Attribute> attributes = new ArrayList<>();
-    public int lastPosition = -1;
+    public int lastPosition = 0;
     public int M = 0;
     public Double lastEquity = 0.0;
 
