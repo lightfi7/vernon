@@ -5,93 +5,117 @@ import config.Config;
 import utils.EventHandler;
 import utils.Logger;
 import weka.classifiers.Evaluation;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.classifiers.trees.J48;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class J48Classifier implements EventHandler {
 
-    private static J48 tree = null;
-    private static Evaluation eval = null;
+    private J48 tree;
+    private final ArrayList<Attribute> attributes = new ArrayList<>();
     private int lastPosition = 0;
     private int M = 0;
     private Double lastEquity = 0.0;
 
-    private static final String MODEL_PATH_TEMPLATE = "data/j48_%d.model";
-    private static final String[] REMOVE_OPTIONS = {"-R","1,2,3,5,13,38,39,49"};
-
     public J48Classifier() {
         try {
             Logger.log("Initializing J48 Classifier...");
-            loadModel(Config.M);
+            initialize();
             Logger.log("Initialized J48 Classifier");
         } catch (Exception e) {
-            logError(e);
+            Logger.log("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void loadModel(int M) throws Exception {
-        if (this.M == M) return;
-
-        Logger.log("Loading M" + M + " model...");
-        Application.instance.setIsReady(false);
-        tree = deserializeModel(M);
-
-        Instances data = loadAndFilterData();
-        eval = new Evaluation(data);
-        eval.crossValidateModel(tree, data, 10, new Random(1));
-        printCrossValidationResults();
-
-        this.M = M;
-        Logger.log("Loaded M" + M + " model");
-        Application.instance.setIsReady(true);
-    }
-
-    private J48 deserializeModel(int M) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(String.format(MODEL_PATH_TEMPLATE, M)))) {
-            return (J48) ois.readObject();
-        }
-    }
-
-    private Instances loadAndFilterData() throws Exception {
+    private void initialize() throws Exception {
         DataSource source = new DataSource(Config.ARFF_FILE);
         Instances data = source.getDataSet();
 
+        // Set the class index (assumed to be the last column)
         if (data.classIndex() == -1) {
             data.setClassIndex(data.numAttributes() - 1);
         }
 
+        // Remove specific columns
         Remove remove = new Remove();
-        remove.setOptions(REMOVE_OPTIONS);
+        remove.setOptions(new String[]{"-R", "1,2,3,5,13,38,39,49"});
         remove.setInputFormat(data);
-        return Filter.useFilter(data, remove);
+
+        Instances filteredData = Filter.useFilter(data, remove);
+        setAttributes(data);
+
+        // Initial model load if M is set
+        if (Config.M > 0) {
+            load(Config.M);
+        }
     }
 
-    private void printCrossValidationResults() {
-        System.out.println(eval.toSummaryString("\n10-Fold Cross-Validation Results\n======\n", false));
+    private void setAttributes(Instances data) {
+        for (int i = 0; i < data.numAttributes(); i++) {
+            attributes.add(new Attribute(data.attribute(i).name()));
+        }
+    }
+
+    public void load(int M) throws Exception {
+        if (this.M == M) return;
+
+        Logger.log("Loading M" + M + " model...");
+        Application.instance.setIsReady(false);
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/j48_" + M + ".model"))) {
+            tree = (J48) ois.readObject();
+            this.M = M;
+            Logger.log("Loaded M" + M + " model");
+        } catch (FileNotFoundException e) {
+            Logger.log("Model file not found: " + e.getMessage());
+            train(M);  // Train a new model if loading fails
+        } finally {
+            Application.instance.setIsReady(true);
+        }
     }
 
     public void train(int M) {
         try {
             Logger.log("Training M" + M + " model...");
             tree = new J48();
-            Instances data = loadAndFilterData();
+            DataSource source = new DataSource(Config.ARFF_FILE);
+            Instances data = source.getDataSet();
+
+            if (data.classIndex() == -1) {
+                data.setClassIndex(data.numAttributes() - 1);
+            }
+
+            Remove remove = new Remove();
+            remove.setOptions(new String[]{"-R", "1,2,3,5,13,38,39,49"});
+            remove.setInputFormat(data);
+
+            Instances filteredData = Filter.useFilter(data, remove);
             setJ48Options(M);
-            tree.buildClassifier(data);
-            serializeModel(M);
+
+            // Perform 10-fold cross-validation
+            Evaluation eval = new Evaluation(filteredData);
+            eval.crossValidateModel(tree, filteredData, 10, new Random(1));
+            Logger.log(eval.toSummaryString("\n10-Fold Cross-Validation Results\n======\n", false));
+
+            // Build classifier on the entire dataset
+            tree.buildClassifier(filteredData);
+            saveModel(M);
             Logger.log("Trained M" + M + " model");
         } catch (Exception e) {
-            logError(e);
+            Logger.log("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -108,14 +132,16 @@ public class J48Classifier implements EventHandler {
                 options = new String[]{"-C", "0.25", "-M", "15"};
                 break;
             default:
-                throw new IllegalArgumentException("Invalid M value: " + M);
+                options = new String[]{"-C", "0.25", "-M", "2"}; // Default case if none match
+                break;
         }
         tree.setOptions(options);
     }
 
-    private void serializeModel(int M) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format(MODEL_PATH_TEMPLATE, M)))) {
+    private void saveModel(int M) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("data/j48_" + M + ".model"))) {
             oos.writeObject(tree);
+            oos.flush();
         }
     }
 
@@ -123,17 +149,17 @@ public class J48Classifier implements EventHandler {
         try {
             Logger.log("Changing to M" + M + " model...");
             Application.instance.setIsReady(false);
-            loadModel(M);
+            load(M);
             Logger.log("Changed to M" + M + " model");
             Application.instance.setIsReady(true);
         } catch (Exception e) {
-            logError(e);
+            Logger.log("Error: " + e.getMessage());
         }
     }
 
     public void predict(double[] features, String time, Double epoch, Double equityLast) {
         try {
-            Instances data = new Instances("InboundInstance", createAttributes(), 0);
+            Instances data = new Instances("InboundInstance", attributes, 0);
             data.add(new DenseInstance(1.0, features));
 
             if (data.classIndex() == -1) {
@@ -143,35 +169,36 @@ public class J48Classifier implements EventHandler {
             Remove remove = new Remove();
             remove.setOptions(new String[]{"-R", "1,2,3,5,14,38,39,49"});
             remove.setInputFormat(data);
-            Instances filteredData = Filter.useFilter(data, remove);
 
+            Instances filteredData = Filter.useFilter(data, remove);
             double prediction = tree.classifyInstance(filteredData.instance(0));
-            handlePrediction(prediction, epoch, equityLast);
+            Logger.log("Outbound: " + prediction);
+
+            executeTradeLogic(prediction, epoch, equityLast);
         } catch (Exception e) {
-            logError(e);
+            Logger.log("Error: " + e.getMessage());
         }
     }
 
-    private ArrayList<Attribute> createAttributes() {
-        return new ArrayList<>(Arrays.asList(/* Define attributes here */));
-    }
-
-    private void handlePrediction(double prediction, Double epoch, Double equityLast) {
-        int ep = epoch.intValue() / 10000 * 10;
-
+    private void executeTradeLogic(double prediction, Double epoch, Double equityLast) {
+        int ep = epoch.intValue() / 10000 * 10; // Scale epoch
         if (lastPosition == 0 && prediction == 1) {
             lastPosition = 1;
-            logAndSendTradeActions("COVER", ep, equityLast);
+            logAndSendTrade("COVER", ep, equityLast);
+            logAndSendTrade("BUY", ep + 1, equityLast - 10.0);
+            lastEquity = equityLast;
         } else if (lastPosition == 1 && prediction == 0) {
             lastPosition = 0;
-            logAndSendTradeActions("SELL", ep, equityLast);
+            logAndSendTrade("SELL", ep, equityLast);
+            logAndSendTrade("SHORT", ep + 1, equityLast + 10.0);
+            lastEquity = equityLast;
         }
-        lastEquity = equityLast;
     }
 
-    private void logAndSendTradeActions(String action, int ep, Double equityLast) {
-        Logger.log2(String.format("%s %d SPY %s", action, ep, equityLast));
-        Application.instance.client.send(String.format("%s %d SPY %s", action, ep, equityLast));
+    private void logAndSendTrade(String action, int ep, Double equity) {
+        String logMessage = String.format("%s %d SPY %s", action, ep, equity);
+        Logger.log2(logMessage);
+        Application.instance.client.send(logMessage);
     }
 
     @Override
@@ -197,14 +224,9 @@ public class J48Classifier implements EventHandler {
             ArrayList<Double> features = Feature.parse(jsonData);
             double[] values = features.stream().mapToDouble(Double::doubleValue).toArray();
             predict(values, jsonObject.getString("time"), jsonObject.getDouble("epoch"), jsonObject.getDouble("equityLast"));
-
         } catch (Exception e) {
-            logError(e);
+            Logger.log("Error: " + e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    private void logError(Exception e) {
-        e.printStackTrace();
-        Logger.log("Error: " + e.getMessage());
     }
 }
