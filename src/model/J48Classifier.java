@@ -45,8 +45,7 @@ public class J48Classifier implements EventHandler {
             data.setClassIndex(data.numAttributes() - 1);
         }
 
-        Instances filteredData = applyFilter(data);
-        setAttributes(filteredData);
+        setAttributes(data);
 
         if (Config.M > 0) {
             loadModel(Config.M);
@@ -142,6 +141,7 @@ public class J48Classifier implements EventHandler {
             }
 
             data.add(new DenseInstance(1.0, features));
+
             Instances filteredData = applyFilter(data);
 
             double prediction = tree.classifyInstance(filteredData.instance(0));
