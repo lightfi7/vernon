@@ -24,7 +24,7 @@ import java.util.Random;
 public class J48Classifier implements EventHandler {
 
     private J48 tree;
-    private final ArrayList<Attribute> attributes = new ArrayList<>();
+    private final ArrayList<Attribute> attributes = new ArrayList<Attribute>();
     private int lastPosition = 0;
     private int M = 0;
     private Double lastEquity = 0.0;
@@ -65,7 +65,7 @@ public class J48Classifier implements EventHandler {
 
     private void setAttributes(Instances data) {
         for (int i = 0; i < data.numAttributes(); i++) {
-            attributes.add(new Attribute(data.attribute(i).name()));
+            attributes.add(data.attribute(i));
         }
     }
 
@@ -159,18 +159,21 @@ public class J48Classifier implements EventHandler {
 
     public void predict(double[] features, String time, Double epoch, Double equityLast) {
         try {
-            Instances data = new Instances("InboundInstance", attributes, 0);
-            data.add(new DenseInstance(1.0, features));
+            Instances data = new Instances("InboundData", attributes, 0);
 
             if (data.classIndex() == -1) {
                 data.setClassIndex(data.numAttributes() - 1);
             }
 
+            data.add(new DenseInstance(1.0, features));
+
             Remove remove = new Remove();
-            remove.setOptions(new String[]{"-R", "1,2,3,5,14,38,39,49"});
+            remove.setOptions(new String[]{"-R", "1,2,3,5,13,38,39,49"});
             remove.setInputFormat(data);
 
             Instances filteredData = Filter.useFilter(data, remove);
+
+            System.out.println(filteredData.instance(0));
             double prediction = tree.classifyInstance(filteredData.instance(0));
             Logger.log("Outbound: " + prediction);
 
@@ -223,6 +226,7 @@ public class J48Classifier implements EventHandler {
 
             ArrayList<Double> features = Feature.parse(jsonData);
             double[] values = features.stream().mapToDouble(Double::doubleValue).toArray();
+            System.out.println(features);
             predict(values, jsonObject.getString("time"), jsonObject.getDouble("epoch"), jsonObject.getDouble("equityLast"));
         } catch (Exception e) {
             Logger.log("Error: " + e.getMessage());

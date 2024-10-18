@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.codehaus.groovy.runtime.InvokerHelper.asList;
+
 public class Feature {
     
     private static LocalTime startTime = LocalTime.of(9, 30); // 9:30 AM start time
@@ -303,6 +305,12 @@ public class Feature {
         features.add(0.0); //49
         features.add(1.0); //50
 
-        return features;
+//        return features;
+        ArrayList<Double> arrayList = new ArrayList<>();
+        double[] numbers = {32,0,0,11,447.505,0.989076,0.233124,1,10,0.98908,11,0,1.365028,0.732586,1.435375,1,10,0.531669,7,4,1.30402,1.381797,0.943713,0.495,0.505,0,0,1,0.006572,0.008987,1.350116,0,0,0,1,2,9,447.505,448.24,11,1,0,10,1,0.99836,-1,0,0.56179,447.526119,1};
+        for (int i = 0; i < numbers.length; i++) {
+            arrayList.add(numbers[i]);
+        }
+        return  arrayList;
     }
 }
