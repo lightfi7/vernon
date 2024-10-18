@@ -41,7 +41,7 @@ public class MainDialog extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Application.instance.classifier.change(2);
+                Application.instance.classifier.changeModel(2);
             }
         });
 
@@ -49,7 +49,7 @@ public class MainDialog extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Application.instance.classifier.change(7);
+                Application.instance.classifier.changeModel(7);
             }
         });
 
@@ -57,7 +57,7 @@ public class MainDialog extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Application.instance.classifier.change(15);
+                Application.instance.classifier.changeModel(15);
             }
 
         });
@@ -70,7 +70,7 @@ public class MainDialog extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Application.instance.classifier.train(2);
+                Application.instance.classifier.trainModel(2);
             }
         });
 
@@ -78,7 +78,7 @@ public class MainDialog extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Application.instance.classifier.train(7);
+                Application.instance.classifier.trainModel(7);
             }
         });
 
@@ -86,7 +86,7 @@ public class MainDialog extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Application.instance.classifier.train(15);
+                Application.instance.classifier.trainModel(15);
             }
         });
 
