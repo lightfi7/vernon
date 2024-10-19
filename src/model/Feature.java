@@ -45,7 +45,7 @@ public class Feature {
         // Extract necessary fields from the JSON data
         String timeString = (String) jsonData.get("time");
         LocalTime time = LocalTime.parse(timeString);
-        int feature1Time = (int) ChronoUnit.MINUTES.between(startTime, time) + 1;
+        int feature1Time = (int) ChronoUnit.MINUTES.between(startTime, time);
         double AAAA = (double) jsonData.get("AAAA");
         double BBBB = (double) jsonData.get("BBBB");
         double CCCC = (double) jsonData.get("CCCC");

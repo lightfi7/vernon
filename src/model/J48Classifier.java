@@ -154,7 +154,7 @@ public class J48Classifier implements EventHandler {
     }
 
     private void executeTradeLogic(double prediction, Double epoch, Double equityLast) {
-        int ep = epoch.intValue() / 10000 * 10; // Scale epoch
+        long ep = (long) (epoch / 10000) * 10; // Scale epoch
         if (lastPosition == 0 && prediction == 1) {
             lastPosition = 1;
             logAndSendTrade("COVER", ep, equityLast);
@@ -167,8 +167,8 @@ public class J48Classifier implements EventHandler {
         lastEquity = equityLast;
     }
 
-    private void logAndSendTrade(String action, int ep, Double equity) {
-        String logMessage = String.format("%s %d SPY %s", action, ep, equity);
+    private void logAndSendTrade(String action, long ep, Double equity) {
+        String logMessage = String.format("%d SPY %s %s %s", ep, action,  equity.toString(), lastEquity.toString());
         Logger.log2(logMessage);
         Application.instance.client.send(logMessage);
     }
