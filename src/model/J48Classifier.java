@@ -103,7 +103,6 @@ public class J48Classifier implements EventHandler {
 
             Evaluation eval = new Evaluation(filteredData);
             eval.crossValidateModel(tree, filteredData, 10, new Random(1));
-            Logger.log(eval.toSummaryString("\n10-Fold Cross-Validation Results\n======\n", false));
 
             tree.buildClassifier(filteredData);
             saveModel(M);
@@ -193,7 +192,7 @@ public class J48Classifier implements EventHandler {
             jsonData.put("TTTT", jsonObject.getDouble("TTTT"));
 
             ArrayList<Double> features = Feature.parse(jsonData);
-            Logger.log("Features: " + features.toString());
+            System.out.println("Features: " + features.toString());
             predict(features.stream().mapToDouble(Double::doubleValue).toArray(),
                     jsonObject.getString("time"),
                     jsonObject.getDouble("epoch"),
