@@ -24,6 +24,7 @@ public class Logger {
             e.printStackTrace();
         }
     }
+
     public static void log2(String logString) {
         MainDialog.instance.addLogMessage(logString);
         try (PrintWriter writer = new PrintWriter(new FileWriter(M_LOG_FILE, true))) {
@@ -36,4 +37,18 @@ public class Logger {
             e.printStackTrace();
         }
     }
+
+    public static void log3(String logString) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(LOG_FILE, true))) {
+            LocalDateTime currentTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedTime = currentTime.format(formatter);
+            System.out.println(formattedTime + " " + logString);
+            writer.printf("%s %s%n", formattedTime, logString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

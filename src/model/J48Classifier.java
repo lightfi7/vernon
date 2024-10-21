@@ -193,6 +193,7 @@ public class J48Classifier implements EventHandler {
 
             ArrayList<Double> features = Feature.parse(jsonData);
             System.out.println("Features: " + features.toString());
+            Logger.log3("Features: " + features.toString());
             predict(features.stream().mapToDouble(Double::doubleValue).toArray(),
                     jsonObject.getString("time"),
                     jsonObject.getDouble("epoch"),
