@@ -157,17 +157,17 @@ public class J48Classifier implements EventHandler {
         if (lastPosition == 0 && prediction == 1) {
             lastPosition = 1;
             logAndSendTrade("COVER", ep, equityLast);
-            logAndSendTrade("BUY", ep + 1, equityLast - 10.0);
+            logAndSendTrade("BUY", ep + 1, equityLast);
         } else if (lastPosition == 1 && prediction == 0) {
             lastPosition = 0;
             logAndSendTrade("SELL", ep, equityLast);
-            logAndSendTrade("SHORT", ep + 1, equityLast + 10.0);
+            logAndSendTrade("SHORT", ep + 1, equityLast);
         }
         lastEquity = equityLast;
     }
 
     private void logAndSendTrade(String action, long ep, Double equity) {
-        String logMessage = String.format("%d SPY %s %s %s", ep, action,  equity.toString(), lastEquity.toString());
+        String logMessage = String.format("%d SPY %s %s %s", ep, action,  lastEquity.toString(), equity.toString());
         Logger.mlog(logMessage, true);
         Application.instance.client.send(logMessage);
     }
