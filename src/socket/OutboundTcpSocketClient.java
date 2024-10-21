@@ -88,7 +88,6 @@ public class OutboundTcpSocketClient {
             reconnect(); // Call reconnect when connection is lost
         } finally {
             close();
-            reconnect(); // Call reconnect when connection is lost
         }
     }
 
