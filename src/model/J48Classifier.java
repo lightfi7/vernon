@@ -31,11 +31,11 @@ public class J48Classifier implements EventHandler {
 
     public J48Classifier() {
         try {
-            Logger.log("Initializing J48 Classifier...");
+            Logger.log("Initializing J48 Classifier...", true);
             initialize();
-            Logger.log("Initialized J48 Classifier");
+            Logger.log("Initialized J48 Classifier", true);
         } catch (Exception e) {
-            Logger.log("Error during initialization: " + e.getMessage());
+            Logger.log("Error during initialization: " + e.getMessage(), true);
         }
     }
 
@@ -74,15 +74,15 @@ public class J48Classifier implements EventHandler {
     public synchronized void loadModel(int M) throws Exception {
         if (this.M == M) return;
 
-        Logger.log("Loading M" + M + " model...");
+        Logger.log("Loading M" + M + " model...", true);
         Application.instance.setIsReady(false);
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/j48_" + M + ".model"))) {
             tree = (J48) ois.readObject();
             this.M = M;
-            Logger.log("Loaded M" + M + " model");
+            Logger.log("Loaded M" + M + " model", true);
         } catch (FileNotFoundException e) {
-            Logger.log("Model file not found: " + e.getMessage());
+            Logger.log("Model file not found: " + e.getMessage(), true);
             trainModel(M);
         } finally {
             Application.instance.setIsReady(true);
@@ -91,7 +91,7 @@ public class J48Classifier implements EventHandler {
 
     public void trainModel(int M) {
         try {
-            Logger.log("Training M" + M + " model...");
+            Logger.log("Training M" + M + " model...", true);
             tree = new J48();
             Instances data = loadData(Config.ARFF_FILE);
             if (data.classIndex() == -1) {
@@ -106,9 +106,9 @@ public class J48Classifier implements EventHandler {
 
             tree.buildClassifier(filteredData);
             saveModel(M);
-            Logger.log("Trained M" + M + " model");
+            Logger.log("Trained M" + M + " model", true);
         } catch (Exception e) {
-            Logger.log("Training Error: " + e.getMessage());
+            Logger.log("Training Error: " + e.getMessage(), true);
         }
     }
 
@@ -125,10 +125,10 @@ public class J48Classifier implements EventHandler {
 
     public void changeModel(int M) {
         try {
-            Logger.log("Changing to M" + M + " model...");
+            Logger.log("Changing to M" + M + " model...", true);
             loadModel(M);
         } catch (Exception e) {
-            Logger.log("Error changing model: " + e.getMessage());
+            Logger.log("Error changing model: " + e.getMessage(), true);
         }
     }
 
@@ -144,11 +144,11 @@ public class J48Classifier implements EventHandler {
             Instances filteredData = applyFilter(data);
 
             double prediction = tree.classifyInstance(filteredData.instance(0));
-            Logger.log("Prediction: " + prediction);
+            Logger.log("Prediction: " + prediction, true);
 
             executeTradeLogic(prediction, epoch, equityLast);
         } catch (Exception e) {
-            Logger.log("Prediction Error: " + e.getMessage());
+            Logger.log("Prediction Error: " + e.getMessage(), true);
         }
     }
 
@@ -168,16 +168,16 @@ public class J48Classifier implements EventHandler {
 
     private void logAndSendTrade(String action, long ep, Double equity) {
         String logMessage = String.format("%d SPY %s %s %s", ep, action,  equity.toString(), lastEquity.toString());
-        Logger.log2(logMessage);
+        Logger.mlog(logMessage, true);
         Application.instance.client.send(logMessage);
     }
 
     @Override
     public void onDataReceived(String jsonString) {
         try {
-            Logger.log("Inbound data: " + jsonString);
+            Logger.log("Inbound data: " + jsonString, true);
             if (!Application.instance.isReady) {
-                Logger.log("Application isn't ready");
+                Logger.log("Application isn't ready", true);
                 return;
             }
 
@@ -192,14 +192,13 @@ public class J48Classifier implements EventHandler {
             jsonData.put("TTTT", jsonObject.getDouble("TTTT"));
 
             ArrayList<Double> features = Feature.parse(jsonData);
-            System.out.println("Features: " + features.toString());
-            Logger.log3("Features: " + features.toString());
+            Logger.log("Features: " + features.toString(), false);
             predict(features.stream().mapToDouble(Double::doubleValue).toArray(),
                     jsonObject.getString("time"),
                     jsonObject.getDouble("epoch"),
                     jsonObject.getDouble("equityLast"));
         } catch (Exception e) {
-            Logger.log("Error processing data: " + e.getMessage());
+            Logger.log("Error processing data: " + e.getMessage(), true);
         }
     }
 }

@@ -37,7 +37,7 @@ public class Application {
     }
 
     public void start() throws IOException, InterruptedException {
-        Logger.log("Press the button to start");
+        Logger.log("Press the button to start", true);
         setIsReady(true);
     }
 
@@ -53,7 +53,7 @@ public class Application {
 //        Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT);
 
         client = new OutboundTcpSocketClient(URI.create(Config.ENDPOINT), classifier);
-        Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT);
+        Logger.log("Try to connect to endpoint at: " + Config.ENDPOINT, true);
 
 //        BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
 //        while (true) {
