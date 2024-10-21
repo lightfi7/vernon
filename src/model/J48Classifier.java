@@ -154,16 +154,16 @@ public class J48Classifier implements EventHandler {
 
     private void executeTradeLogic(double prediction, Double epoch, Double equityLast) {
         long ep = (long) (epoch / 10000) * 10; // Scale epoch
+        lastEquity = equityLast;
         if (lastPosition == 0 && prediction == 1) {
             lastPosition = 1;
             logAndSendTrade("COVER", ep, equityLast);
-            logAndSendTrade("BUY", ep + 1, equityLast);
+            logAndSendTrade("BUY", ep + 1, equityLast - 10.0);
         } else if (lastPosition == 1 && prediction == 0) {
             lastPosition = 0;
             logAndSendTrade("SELL", ep, equityLast);
-            logAndSendTrade("SHORT", ep + 1, equityLast);
+            logAndSendTrade("SHORT", ep + 1, equityLast + 10.0);
         }
-        lastEquity = equityLast;
     }
 
     private void logAndSendTrade(String action, long ep, Double equity) {
