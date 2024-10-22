@@ -25,7 +25,7 @@ public class J48Classifier implements EventHandler {
 
     private J48 tree;
     private final ArrayList<Attribute> attributes = new ArrayList<>();
-    private int lastPosition = 0;
+    private int lastPosition = -1;
     private int M = 0;
     private Double lastEquity = 0.0;
 
@@ -163,6 +163,15 @@ public class J48Classifier implements EventHandler {
             lastPosition = 0;
             logAndSendTrade("SELL", ep, equityLast);
             logAndSendTrade("SHORT", ep + 1, equityLast + 10.0);
+        } else if(lastPosition == -1){
+            lastPosition = (int) prediction;
+            if(lastPosition == 0){
+                logAndSendTrade("SELL", ep, equityLast);
+                logAndSendTrade("SHORT", ep + 1, equityLast + 10.0);
+            } else {
+                logAndSendTrade("COVER", ep, equityLast);
+                logAndSendTrade("BUY", ep + 1, equityLast - 10.0);
+            }
         }
     }
 
