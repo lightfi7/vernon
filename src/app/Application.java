@@ -27,8 +27,8 @@ public class Application {
 
     public Application() {
         instance = this;
-        mainDialog.setVisible(true);
         classifier = new J48Classifier();
+        mainDialog.setVisible(true);
     }
 
     public void setIsReady(boolean ready){
